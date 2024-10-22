@@ -1,0 +1,114 @@
+/* Styling for the modal */
+
+.modal-header {
+  background-color: #f8f9fa;
+  color: #c1272d;
+  border-bottom: 2px solid #c1272d;
+}
+
+.modal-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+button.btn {
+  background-color: black;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.image-modal-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-preview-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-preview-container img,
+.image-preview-container svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.download-section {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.download-section h2 {
+  margin-bottom: 25%;
+  font-size: 2.5vh;
+  margin-top: 25%;
+}
+
+.download-section button {
+  margin-bottom: 10px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.download-section button.btn.btn-primary,
+.download-section button.btn.btn-success,
+.download-section button.btn.btn-warning {
+  background-color: #c1272d; /* Set the background color */
+  color: white; /* Set the text color */
+}
+
+/* Optional: Change button color on hover */
+.download-section button.btn.btn-primary:hover,
+.download-section button.btn.btn-success:hover,
+.download-section button.btn.btn-warning:hover {
+  background-color: #a0212a; /* Darken color slightly on hover */
+  color: white; /* Keep text color white */
+}
+
+
+@media (max-width: 990px){
+  .download-section h2 {
+    margin-bottom: 25%;
+    font-size: 1.75vh;
+    margin-top: 25%;
+  }
+  .download-section button.btn.btn-primary,
+  .download-section button.btn.btn-success,
+  .download-section button.btn.btn-warning {
+    font-size: 1vh;
+  }
+}
+
+@media (max-width: 770px){
+  .modal-body {
+    padding-top: 0px !important;
+  }
+  .download-section h2 {
+    margin-bottom: 25%;
+    font-size: 1.5vh;
+    margin-top: 25%;
+  }
+  button.btn.btn-primary, button.btn.btn-success, button.btn.btn-warning {
+    font-size: 0.75vh;
+  }
+}
+
+@media (max-width: 355px){
+  .download-section h2 {
+    margin-bottom: 25%;
+    font-size: 1vh;
+    margin-top: 25%;
+  }
+  button.btn.btn-primary, button.btn.btn-success, button.btn.btn-warning {
+    font-size: 0.5vh;
+  }
+}

@@ -1,0 +1,194 @@
+/* Navbar Base Styles */
+.navbar {
+  position: sticky !important;
+  top: 0; /* Sticks the navbar to the top of the viewport */
+  z-index: 1000; /* Ensures the navbar is above other content */
+  background-color: transparent; /* Initial transparent background */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+  transform: scale(0.98); /* Slightly reduce the size */
+  padding: 5px 0; /* Reduce padding for smaller height */
+  min-height: 50px; /* Define a minimum height */
+}
+
+/* Navbar Branding (Logo and Text) */
+.navbar-logo {
+  width: 120px; /* Reduce the size of the logo */
+  height: 30px; /* Reduce the height */
+}
+
+.navbar-brand {
+  font-size: 18px; /* Reduce the font size of the brand */
+  margin-right: 0px !important;
+}
+
+/* Navbar Content Layout */
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space items evenly */
+  width: 100%; /* Ensures full width for navbar content */
+}
+
+/* Search Bar Styles */
+.search-bar {
+  flex-grow: 1; /* Allows the search bar to take available space */
+  margin: 0px; /* Margin for spacing */
+  position: relative; /* Make it a relative positioning context */
+}
+
+.search-bar input {
+  border-radius: 20px; /* Rounded corners */
+  border: 1px solid #ccc; /* Optional: add border */
+  padding: 6px 10px; /* Adjust padding */
+  width: 100%; /* Full width for the input */
+  padding-right: 35px; /* Space for the search icon */
+  transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+.search-bar input:focus {
+  border-color: #c1272d; /* Change this color as needed */
+  outline: none; /* Remove default outline */
+}
+
+/* Search Icon Inside Input */
+.search-icon {
+  position: absolute; /* Position the icon inside the search bar */
+  right: 10px; /* Adjusted distance from the right edge */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Adjust vertical position */
+  pointer-events: none; /* Prevent clicks on the icon */
+}
+
+/* Color Picker Styling */
+.color-picker {
+  display: flex; /* Flexbox for aligning color pickers */
+  align-items: center;
+}
+
+.color-picker label {
+  margin-right: 0px !important; /* Space between label and color picker */
+  font-size: 1rem; /* Reduce font size for labels */
+}
+
+/* Styling the Color Picker */
+input[type='color'] {
+  margin-right: 8px; /* Adjust space between pickers */
+  width: 30px; /* Reduce size of the color picker */
+  height: 30px; /* Reduce size of the color picker */
+  border-radius: 5px; /* Rounded corners */
+  border: 2px solid #ffffff; /* Optional: to add a visible border */
+  overflow: hidden; /* Ensure no overflow */
+}
+
+.color-picker {
+  border-radius: 20px; /* Rounded corners for the color picker container */
+  padding: 4px; /* Adjust padding */
+  background-color: white; /* Optional: background color for visibility */
+}
+
+/* Navbar Background & Effect on Scroll */
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.97); /* Change to light color when scrolled */
+  transform: scale(1); /* Slightly zoomed in on scroll */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for elevation */
+}
+
+/* Hover Effects for Navbar Links */
+.navbar a:hover {
+  color: #c1272d; /* Highlight on hover */
+  text-decoration: underline; /* Optional: add underline on hover */
+}
+
+/* Focus Effects for Accessibility */
+.navbar a:focus, .search-bar input:focus, input[type='color']:focus {
+  outline: 2px solid #c1272d; /* Add an outline on focus */
+}
+
+/* Hover Effect for Logo */
+.navbar-logo img:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Mobile Menu Toggle Button */
+.navbar-toggler {
+  background-color: #c1272d;
+  border: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,..."); /* Customize icon */
+  width: 30px;
+  height: 30px;
+}
+
+/* Collapsed Navbar Menu for Smaller Screens */
+.navbar-collapse {
+  background-color: rgba(255, 255, 255, 0.97); /* Background for the dropdown menu */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* Container Spacing */
+.navbar > .container-fluid {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+/* Responsive Styles for Smaller Screens */
+@media (max-width: 875px) {
+  .navbar > .container-fluid {
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align items */
+    margin: 0; /* Remove margin for better fitting */
+  }
+
+  .navbar-brand {
+    font-size: 16px; /* Further reduce brand text size */
+    margin-bottom: 8px; /* Space below brand */
+  }
+
+  .r-div.d-flex.align-items-center {
+    width: 100%;
+  }
+
+  .search-bar {
+    width: 75%; /* Full width for search bar */
+  }
+
+  .color-picker {
+    justify-content: center; /* Center color pickers */
+    width: 100%; /* Full width for color pickers */
+  }
+
+  label.me-2, label.mx-2 {
+    font-size: 0.80rem; /* Further reduce font size for labels */
+  }
+
+  input[type='color'] {
+    width: 25px; /* Adjust color picker size */
+    height: 25px; /* Adjust color picker size */
+  }
+}
+
+@media (max-width: 570px) {
+  label.me-2, label.mx-2 {
+    font-size: 0.5rem;
+  }
+  input.form-control {
+    font-size: 1.3vh;
+  }
+}
+
+@media (max-width: 380px) {
+  label.me-2, label.mx-2 {
+    font-size: 0.5rem;
+  }
+  input.form-control {
+    font-size: 0.5rem;
+  }
+  span.search-icon img {
+    width: 15px;
+    height: 15px;
+  }
+}

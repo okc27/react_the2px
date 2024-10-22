@@ -1,0 +1,64 @@
+.footer {
+  background-color: #f8f9fa; /* Light background */
+  height: 60px; /* Reduced height */
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Align elements */
+  align-items: center; /* Center vertically */
+  padding: 0 20px; /* Add padding for breathing space */
+}
+
+.footer-logo img {
+  height: 30px; /* Adjust the logo size */
+  width: 120px;
+}
+
+.footer-rights {
+  font-size: 14px;
+  color: #c1272d; /* Red color for text */
+}
+
+.footer-rights p {
+  margin: 0px;
+  font-size: 1rem;
+  text-align: right; /* Align text to the right */
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 570px) {
+.footer {
+  flex-direction: column;
+  text-align: center;
+  height: auto; /* Allow height to adjust */
+  padding: 10px; /* Adjust padding */
+}
+
+.footer-logo img {
+  margin-bottom: 10px; /* Add margin for spacing */
+}
+
+.footer-rights p {
+  font-size: 0.85rem; /* Slightly reduce font size */
+}
+}
+
+@media (max-width: 380px) {
+.footer-rights p {
+  font-size: 0.75rem; /* Further reduce font size */
+}
+
+label.me-2, label.mx-2 {
+  font-size: 0.5rem;
+}
+
+input.form-control {
+  font-size: 0.5rem;
+}
+
+span.search-icon img {
+  width: 15px;
+  height: 15px;
+}
+}
