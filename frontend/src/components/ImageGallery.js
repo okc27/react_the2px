@@ -58,17 +58,30 @@ const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
   return (
     <div className="image-gallery container">
       <div className="row">
-        {filteredImages.map((image) => (
-          <div className="col-4 mb-4" key={image.id}> {/* Custom column class for 3 cards in a row */}
-            <ImageCard
-              title={image.title.rendered}
-              description={image.description}
-              svgUrl={image.file}
-              svgColor={svgColor}
-              backgroundColor={bgColor}
-            />
-          </div>
-        ))}
+        {filteredImages.length > 0 ? (
+          filteredImages.map((image) => (
+            <div className="col-4 mb-4" key={image.id}> {/* Custom column class for 3 cards in a row */}
+              <ImageCard
+                title={image.title.rendered}
+                description={image.description}
+                svgUrl={image.file}
+                svgColor={svgColor}
+                backgroundColor={bgColor}
+              />
+            </div>
+          ))
+        ) : (
+          searchInput && ( // Display the image and message only if there's input in the search bar
+            <div className="col-12 d-flex flex-column align-items-center justify-content-center" style={{ height: '60vh' }}>
+              <img
+                src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/image-not-found-1.svg"
+                alt="No images found logo"
+                style={{ width: '40%', marginBottom: '15px' }}
+              />
+              <h5>It seems we can’t find what you’re looking for.</h5>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
