@@ -30,7 +30,7 @@ const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
           return {
             ...image,
             file: fileUrl.replace(/\/\//g, '/'),
-            file: fileUrl.startsWith('http') ? fileUrl : `http://localhost${fileUrl}`,
+            file: fileUrl.startsWith('http') ? fileUrl : `http://localhost/headlesswp/the2px${fileUrl}`, // Updated to use the live server URL
             tags: image.svg_image_tags ? image.svg_image_tags.split(',') : [], // Split tags into an array
           };
         });
