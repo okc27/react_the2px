@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 import ImageCard from './ImageCard';
 
-const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
+const ImageGallery = ({ bgColor, searchInput }) => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -65,7 +65,6 @@ const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
                 title={image.title.rendered}
                 description={image.description}
                 svgUrl={image.file}
-                svgColor={svgColor}
                 backgroundColor={bgColor}
               />
             </div>
@@ -76,7 +75,7 @@ const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
               <img
                 src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/image-not-found-1.svg"
                 alt="No images found logo"
-                style={{ width: '40%', marginBottom: '15px' }}
+                style={{ width: '50%', marginBottom: '15px' }}
               />
               <h5>It seems we can’t find what you’re looking for.</h5>
             </div>
@@ -89,7 +88,6 @@ const ImageGallery = ({ svgColor, bgColor, searchInput }) => {
 
 // Adding prop types for validation
 ImageGallery.propTypes = {
-  svgColor: PropTypes.string.isRequired,
   bgColor: PropTypes.string,
   searchInput: PropTypes.string.isRequired,
 };

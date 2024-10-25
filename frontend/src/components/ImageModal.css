@@ -1,4 +1,3 @@
-/* Styling for the modal */
 .modal-header {
   background-color: #f8f9fa;
   color: #c1272d;
@@ -162,4 +161,4 @@ h3 {
     width: 25px; /* Further reduced for smaller screens */
     height: 25px; /* Further reduced for smaller screens */
   }
-}
+} 

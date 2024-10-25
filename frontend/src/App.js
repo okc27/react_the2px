@@ -6,7 +6,6 @@ import ImageModal from './components/ImageModal'; // Import the ImageModal compo
 import './App.css';
 
 const App = () => {
-  const [svgColor, setSvgColor] = useState('#c1272d'); // Default SVG color
   const [bgColor, setBgColor] = useState('#fdfdfd'); // Default background color
   const [searchInput, setSearchInput] = useState(''); // State for search input
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
@@ -40,8 +39,6 @@ const App = () => {
   return (
     <div className="app"> {/* Add class for flex styling */}
       <Navbar
-        svgColor={svgColor}
-        setSvgColor={setSvgColor}
         bgColor={bgColor}
         setBgColor={setBgColor}
         searchInput={searchInput} // Pass search input to Navbar
@@ -49,7 +46,6 @@ const App = () => {
       />
       <main className="content">
         <ImageGallery 
-          svgColor={svgColor} 
           bgColor={bgColor} 
           searchInput={searchInput} 
           openModal={openModal} // Pass openModal function to ImageGallery

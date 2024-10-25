@@ -27,7 +27,9 @@
   background-color: #fdfdfd;
   transition: transform 0.3s ease;
 }
-
+img{
+  width: 100%;
+}
 /* Card background */
 .image-card.card.p-3.text-center {
   background: #fdfdfd;
