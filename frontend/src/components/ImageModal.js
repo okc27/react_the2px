@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import PropTypes from 'prop-types';
 import { Modal, Button, Form } from 'react-bootstrap';
 import ColorPicker from './ColorPicker';
@@ -24,15 +24,16 @@ const throttle = (func, limit) => {
   };
 };
 
-const ImageModal = ({ show, handleClose, image, title }) => {
+const ImageModal = ({ show, handleClose, image, title, tags }) => {
   const [colors, setColors] = useState([]);
   const [currentColorIndex, setCurrentColorIndex] = useState(null);
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Default background color set to white
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [svgContent, setSvgContent] = useState(image);
-  const [temporarySvgContent, setTemporarySvgContent] = useState(image); // Temporary SVG for live changes
-  const [resolution, setResolution] = useState('original'); // Default resolution set to 'original'
+  const [temporarySvgContent, setTemporarySvgContent] = useState(image);
+  const [resolution, setResolution] = useState('original');
+  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
 
   const extractColors = (svgString) => {
     const colorRegex = /#([0-9A-Fa-f]{3,6})\b/g;
@@ -40,20 +41,18 @@ const ImageModal = ({ show, handleClose, image, title }) => {
     return Array.from(foundColors);
   };
 
-  // Throttled color update function
   const updateColor = throttle((index, newColor) => {
     const updatedColors = [...colors];
     updatedColors[index] = newColor;
     setColors(updatedColors);
 
-    // Update the temporary SVG with the new color
     const oldColor = colors[index];
     const updatedSvg = temporarySvgContent.replace(new RegExp(oldColor, 'g'), newColor);
     setTemporarySvgContent(updatedSvg);
-  }, 50); // Throttle updates every 50ms
+  }, 50);
 
   const applyChangesToOriginal = () => {
-    setSvgContent(temporarySvgContent); // Update the original SVG content with the temporary changes
+    setSvgContent(temporarySvgContent);
   };
 
   const downloadSvg = () => {
@@ -74,7 +73,6 @@ const ImageModal = ({ show, handleClose, image, title }) => {
     img.onload = () => {
       let size;
       if (resolution === 'original') {
-        // Get the intrinsic size of the SVG
         const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
         size = {
           width: svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500,
@@ -86,17 +84,15 @@ const ImageModal = ({ show, handleClose, image, title }) => {
       canvas.width = size.width || size;
       canvas.height = size.height || size;
 
-      // Draw the image on the canvas
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Generate PNG URL
       const pngUrl = canvas.toDataURL('image/png');
       const a = document.createElement('a');
       a.href = pngUrl;
       a.download = `${title}.png`;
       a.click();
     };
-    img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`; // Convert temporary SVG to base64
+    img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`;
   };
 
   const convertSvgToJpeg = () => {
@@ -107,7 +103,6 @@ const ImageModal = ({ show, handleClose, image, title }) => {
     img.onload = () => {
       let size;
       if (resolution === 'original') {
-        // Get the intrinsic size of the SVG
         const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
         size = {
           width: svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500,
@@ -119,18 +114,17 @@ const ImageModal = ({ show, handleClose, image, title }) => {
       canvas.width = size.width || size;
       canvas.height = size.height || size;
 
-      // Set the background color to white by default
       ctx.fillStyle = backgroundColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const jpegUrl = canvas.toDataURL('image/jpeg', 1.0); // Use maximum quality
+      const jpegUrl = canvas.toDataURL('image/jpeg', 1.0);
       const a = document.createElement('a');
       a.href = jpegUrl;
       a.download = `${title}.jpeg`;
       a.click();
     };
-    img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`; // Convert temporary SVG to base64
+    img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`;
   };
 
   useEffect(() => {
@@ -138,7 +132,7 @@ const ImageModal = ({ show, handleClose, image, title }) => {
       const extractedColors = extractColors(image);
       setColors(extractedColors);
       setSvgContent(image);
-      setTemporarySvgContent(image); // Reset temporary SVG content when modal opens
+      setTemporarySvgContent(image);
     }
   }, [show, image]);
 
@@ -156,90 +150,147 @@ const ImageModal = ({ show, handleClose, image, title }) => {
     setResolution(e.target.value);
   };
 
+  const handleColorCircleClick = (index, event) => {
+    setCurrentColorIndex(index);
+    const rect = event.target.getBoundingClientRect();
+    setPickerPosition({ top: rect.bottom + window.scrollY + 10, left: rect.left + window.scrollX });
+    setShowColorPicker(true);
+  };
+
+  const handleBgColorClick = (event) => {
+    const rect = event.target.getBoundingClientRect();
+    setPickerPosition({
+      top: rect.bottom + window.scrollY + 10,
+      left: rect.left + window.scrollX,
+    });
+    setShowBgColorPicker(true);
+  };
+
+  const renderTags = () => {
+    if (!tags || !Array.isArray(tags)) return null; // Return null if no tags or not an array
+    return tags.map((tag, index) => (
+      <span key={index} className="tag">
+        {tag.trim()} {/* Trim whitespace around each tag */}
+      </span>
+    ));
+};
+
   return (
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+    <Modal show={show} onHide={handleClose} size="xl" centered>
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="image-modal-container">
-          <div className="image-preview-container col-8" style={{ backgroundColor }}>
+          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%' }}>
             <div
               className="image-preview"
               style={{ height: '100%', overflow: 'hidden' }}
-              dangerouslySetInnerHTML={{ __html: temporarySvgContent }} // Use temporary SVG for live updates
+              dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
             />
           </div>
-          <div className="download-section col-4">
-            <h2>Let's Download Image for your project.</h2>
 
-            <Form.Group controlId="resolutionSelect">
-              <Form.Label>Select Resolution:</Form.Label>
-              <Form.Control as="select" value={resolution} onChange={handleResolutionChange}>
-                <option value="original">Original</option>
-                <option value="500">500 x 500</option>
-                <option value="1000">1000 x 1000</option>
-                <option value="2000">2000 x 2000</option>
-              </Form.Control>
-            </Form.Group>
 
-            <Button variant="primary" onClick={downloadSvg}>Download SVG</Button>
-            <Button variant="success" onClick={convertSvgToPng}>Download PNG</Button>
-            <Button variant="warning" onClick={convertSvgToJpeg}>Download JPEG</Button>
-          </div>
-        </div>
-        <div className="color-container">
-          <h3>Colors Used in This SVG:</h3>
-          <div className="colors">
-            {colors.map((color, index) => (
-              <div 
-                key={index} 
-                className="color-circle" 
-                style={{ backgroundColor: color }} 
-                onClick={() => {
-                  setCurrentColorIndex(index); // Store index of clicked color
-                  setShowColorPicker(true);
+
+          <div className='content-section' style={{ width: '60%' }}>
+          <div className="color-container">
+              <h3>Colors Used in This SVG:</h3>
+              <div className="colors">
+                {colors.map((color, index) => (
+                  <div 
+                    key={index} 
+                    className="color-circle" 
+                    style={{ backgroundColor: color }} 
+                    onClick={(event) => handleColorCircleClick(index, event)}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            <div className="or-spacer">
+              <div className="mask"></div>
+            </div>
+
+
+            {showColorPicker && (
+              <ColorPicker
+                color={colors[currentColorIndex]}
+                onChange={handleColorChange}
+                onClose={() => {
+                  applyChangesToOriginal();
+                  setShowColorPicker(false);
+                  setCurrentColorIndex(null);
                 }}
+                position={pickerPosition}
               />
-            ))}
+            )}
+            <div className="bg-color-container">
+              <h3>Background Color:</h3>
+              <div 
+                className="bg-color-circle" 
+                style={{ backgroundColor }} 
+                onClick={handleBgColorClick}
+              />
+            </div>
+            {showBgColorPicker && (
+              <ColorPicker
+                color={backgroundColor}
+                onChange={handleBgColorChange}
+                onClose={() => {
+                  setShowBgColorPicker(false);
+                }}
+                position={pickerPosition}
+              />
+            )}
+
+            <div className="or-spacer">
+              <div className="mask"></div>
+            </div>
+              <div className='res-sec'>
+                <Form.Group controlId="resolutionSelect">
+                  <h3><Form.Label>Select Resolution:</Form.Label></h3>
+                  <Form.Control as="select" value={resolution} onChange={handleResolutionChange}>
+                    <option value="original">Original</option>
+                    <option value="500">500 x 500</option>
+                    <option value="1000">1000 x 1000</option>
+                    <option value="2000">2000 x 2000</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+            <div className="or-spacer">
+              <div className="mask"></div>
+            </div>
+
+            <div className="download-section">
+                <Button variant="primary" onClick={downloadSvg}>Download SVG</Button>
+                <Button variant="success" onClick={convertSvgToPng}>Download PNG</Button>
+                <Button variant="warning" onClick={convertSvgToJpeg}>Download JPEG</Button>
+            </div>
+            
+
+            <div className="or-spacer">
+              <div className="mask"></div>
+            </div>
+
+            <div className='tag-sec'>
+              <h5>Tags:</h5>
+              <div className="tags-container">
+                {renderTags()} {/* Render the tags here */}
+              </div>
+            </div>
           </div>
-        </div>
-        {showColorPicker && (
-          <ColorPicker
-            color={colors[currentColorIndex]} // Pass the current color to the ColorPicker
-            onChange={handleColorChange}
-            onClose={() => {
-              applyChangesToOriginal(); // Update original SVG when closing color picker
-              setShowColorPicker(false);
-              setCurrentColorIndex(null); // Reset index when closing
-            }}
-          />
-        )}
-        <div className="bg-color-container">
-          <h3>Background Color:</h3>
-          <div 
-            className="bg-color-circle" 
-            style={{ backgroundColor }} 
-            onClick={() => setShowBgColorPicker(true)}
-          />
-          {showBgColorPicker && (
-            <ColorPicker
-              color={backgroundColor}
-              onChange={handleBgColorChange}
-              onClose={() => setShowBgColorPicker(false)}
-            />
-          )}
         </div>
       </Modal.Body>
     </Modal>
   );
+  
 };
 
 ImageModal.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   image: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,tags: PropTypes.arrayOf(PropTypes.string), // Change this line
 };
 
 export default ImageModal;

@@ -3,7 +3,7 @@ import { SketchPicker } from 'react-color';
 import PropTypes from 'prop-types';
 import './ImageModal.css';
 
-const ColorPicker = ({ color, onChange, onClose }) => {
+const ColorPicker = ({ color, onChange, onClose, position }) => {
   const pickerRef = useRef();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const ColorPicker = ({ color, onChange, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="color-picker-container" ref={pickerRef}>
+    <div className="color-picker-container" ref={pickerRef} style={{ top: position.top, left: position.left }}>
       <SketchPicker color={color} onChangeComplete={onChange} />
     </div>
   );
@@ -31,6 +31,10 @@ ColorPicker.propTypes = {
   color: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  position: PropTypes.shape({
+    top: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default ColorPicker;

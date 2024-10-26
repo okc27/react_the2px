@@ -65,6 +65,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
                 title={image.title.rendered}
                 description={image.description}
                 svgUrl={image.file}
+                tags={image.tags}
                 backgroundColor={bgColor}
               />
             </div>

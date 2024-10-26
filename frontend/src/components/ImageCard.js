@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './ImageCard.css';
 import ImageModal from './ImageModal'; // Import the new ImageModal component
 
-const ImageCard = ({ title, svgUrl, backgroundColor }) => {
+const ImageCard = ({ title, svgUrl, tags ,backgroundColor }) => {
   const [svgContent, setSvgContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -153,6 +153,7 @@ const ImageCard = ({ title, svgUrl, backgroundColor }) => {
         image={svgContent} // Pass the clicked image's content
         downloadSvg={downloadSvg} 
         convertSvgToPng={convertSvgToPng} 
+        tags={tags}
         convertSvgToJpeg={convertSvgToJpeg} 
       />
     </>
