@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'; 
 import PropTypes from 'prop-types';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal} from 'react-bootstrap';
 import ColorPicker from './ColorPicker';
 import './ImageModal.css';
 
@@ -146,10 +146,10 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
     setBackgroundColor(newColor.hex);
   };
 
-  const handleResolutionChange = (e) => {
-    setResolution(e.target.value);
+  const handleResolutionChange = (resolution) => {
+    setResolution(resolution);
   };
-
+  
   const handleColorCircleClick = (index, event) => {
     setCurrentColorIndex(index);
     const rect = event.target.getBoundingClientRect();
@@ -182,15 +182,13 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="image-modal-container">
-          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%' }}>
+          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%'}}>
             <div
               className="image-preview"
-              style={{ height: '100%', overflow: 'hidden' }}
+              style={{ height: '100%', overflow: 'hidden',backgroundColor ,borderradius: '15px'}}
               dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
             />
           </div>
-
-
 
           <div className='content-section' style={{ width: '60%' }}>
           <div className="color-container">
@@ -246,27 +244,32 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
             <div className="or-spacer">
               <div className="mask"></div>
             </div>
-              <div className='res-sec'>
-                <Form.Group controlId="resolutionSelect">
-                  <h3><Form.Label>Select Resolution:</Form.Label></h3>
-                  <Form.Control as="select" value={resolution} onChange={handleResolutionChange}>
-                    <option value="original">Original</option>
-                    <option value="500">500 x 500</option>
-                    <option value="1000">1000 x 1000</option>
-                    <option value="2000">2000 x 2000</option>
-                  </Form.Control>
-                </Form.Group>
-              </div>
+            <div className="res-sec">
+              <h3><span>Select Resolution:</span></h3>
+              <button className={`button-35 ${resolution === 'original' ? 'active' : ''}`} onClick={() => handleResolutionChange('original')}>
+                Original
+              </button>
+              <button className={`button-35 ${resolution === '500' ? 'active' : ''}`} onClick={() => handleResolutionChange('500')}>
+                500 x 500
+              </button>
+              <button className={`button-35 ${resolution === '1000' ? 'active' : ''}`} onClick={() => handleResolutionChange('1000')}>
+                1000 x 1000
+              </button>
+              <button className={`button-35 ${resolution === '2000' ? 'active' : ''}`} onClick={() => handleResolutionChange('2000')}>
+                2000 x 2000
+              </button>
+            </div>
+
             <div className="or-spacer">
               <div className="mask"></div>
             </div>
-
-            <div className="download-section">
-                <Button variant="primary" onClick={downloadSvg}>Download SVG</Button>
-                <Button variant="success" onClick={convertSvgToPng}>Download PNG</Button>
-                <Button variant="warning" onClick={convertSvgToJpeg}>Download JPEG</Button>
-            </div>
             
+            <div className="download-section">
+              <button className="button-29" onClick={downloadSvg} >Download SVG</button>
+              <button className="button-29" onClick={convertSvgToPng} >Download PNG</button>
+              <button className="button-29" onClick={convertSvgToJpeg} >Download JPEG</button>
+            </div>
+
 
             <div className="or-spacer">
               <div className="mask"></div>

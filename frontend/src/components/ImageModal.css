@@ -1,3 +1,6 @@
+h3{
+  line-height: 1.5;
+}
 .or-spacer {
   margin: 10px auto;
   width: 90%;
@@ -26,7 +29,7 @@
 }
 
 .modal-header {
-  background-color: #f8f9fa;
+  background-color: #fdfdfd;
   color: #c1272d;
   padding-top: 5px !important;
   padding-bottom: 5px !important;
@@ -36,6 +39,51 @@
 .modal-title {
   font-size: 1.75rem;
   font-weight: bold;
+}
+
+.button-35 {
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter, sans-serif;
+  font-size: 1rem; /* Reduced font size */
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0.5rem; /* Add margin for spacing between buttons */
+  outline: none;
+  padding: 0.5rem 1rem; /* Reduced padding for smaller buttons */
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s; /* Transition for smooth effect */
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-35:hover {
+  box-shadow: none; /* No shadow on hover for unclicked buttons */
+}
+
+.button-35.active {
+  background-color: #fdfdfd; /* Change background color for active button */
+  box-shadow: transparent 0 0 0 0, rgb(18 18 18 / 10%) 0 6px 20px;
+  transform: scale(1.05); /* Slightly increase size of selected button */
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .button-35 {
+    font-size: 0.9rem; /* Further adjust font size for smaller screens */
+    padding: 0.4rem 0.8rem; /* Further adjust padding for smaller screens */
+  }
 }
 
 button.btn {
@@ -55,7 +103,7 @@ button.btn {
 .image-preview-container {
   background-color: #fdfdfd;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 15px;
   height: 100%;
   width: 35%;
   overflow: hidden;
@@ -76,6 +124,7 @@ button.btn {
   display: flex;
   flex-direction: column;
   padding: 10px;
+  border-radius: 15px;
   background-color: #fdfdfd;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
   
@@ -160,8 +209,9 @@ h3 {
 
 .tag {
   display: inline-block; /* Make sure the tag takes up only necessary space */
-  background-color: #c1272d; /* Light background color for the tags */
-  color: #ffffff; /* Text color */
+  background-color: #fdfdfd; /* Light background color for the tags */
+  color: black; /* Text color */
+  box-shadow: transparent 0 0 0 0, rgb(18 18 18 / 10%) 0 6px 20px;
   padding: 5px 20px; /* Padding to create oval shape */
   border-radius: 50px; /* High border-radius for the oval effect */
   margin: 5px; /* Margin for spacing between tags */
@@ -170,60 +220,53 @@ h3 {
 }
 
 .tag:hover {
-  background-color: #d5d5d5; /* Change color on hover */
+  background-color: #fdfdfd; /* Change color on hover */
+  box-shadow: transparent 0 0 0 0, rgb(18 18 18 / 10%) 0 6px 20px;
+  transform: scale(1.05); /* Slightly increase size of selected button */
 }
 
 
-@media (max-width: 990px) {
-  .download-section h2 {
-    margin-bottom: 25%;
-    font-size: 1.75vh;
-    margin-top: 25%;
-  }
-  
-  .download-section button.btn.btn-primary,
-  .download-section button.btn.btn-success,
-  .download-section button.btn.btn-warning {
-    font-size: 1vh;
-  }
+.button-29 {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, #c1272d 0, #8f2d36 100%); /* Background gradient */
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 36px; /* Reduced height */
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 12px; /* Reduced padding */
+  padding-right: 12px; /* Reduced padding */
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 16px; /* Reduced font size */
 }
 
-@media (max-width: 770px) {
-
-  
-  .download-section h2 {
-    margin-bottom: 25%;
-    font-size: 1.5vh;
-    margin-top: 25%;
-  }
-  
-  button.btn.btn-primary,
-  button.btn.btn-success,
-  button.btn.btn-warning {
-    font-size: 0.75vh;
-  }
+.button-29:focus {
+  box-shadow: #8f2d36 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #8f2d36 0 -3px 0 inset;
 }
 
-@media (max-width: 355px) {
-  .download-section h2 {
-    margin-bottom: 25%;
-    font-size: 1vh;
-    margin-top: 25%;
-  }
-  
-  button.btn.btn-primary,
-  button.btn.btn-success,
-  button.btn.btn-warning {
-    font-size: 0.5vh;
-  }
+.button-29:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #8f2d36 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
 
-  .color-circle {
-    width: 10px; /* Further reduced for smaller screens */
-    height: 10px; /* Further reduced for smaller screens */
-  }
-
-  .bg-color-circle {
-    width: 25px; /* Further reduced for smaller screens */
-    height: 25px; /* Further reduced for smaller screens */
-  }
+.button-29:active {
+  box-shadow: #8f2d36 0 3px 7px inset;
+  transform: translateY(2px);
 }
