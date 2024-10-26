@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './ImageCard.css';
-import ImageModal from './ImageModal'; // Import the new ImageModal component
+import ImageModal from './ImageModal'; // Import the ImageModal component
 
-const ImageCard = ({ title, svgUrl, tags ,backgroundColor }) => {
+const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
   const [svgContent, setSvgContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
 
   useEffect(() => {
+    console.log('Received otherImages in ImageCard:', otherImages); // Log the otherImages data
+
     const fetchSvgContent = async () => {
       try {
         const response = await fetch(svgUrl);
@@ -27,7 +29,7 @@ const ImageCard = ({ title, svgUrl, tags ,backgroundColor }) => {
     };
 
     fetchSvgContent();
-  }, [svgUrl]);
+  }, [svgUrl, otherImages]); // Also depend on otherImages for re-fetch if needed
 
   const downloadSvg = () => {
     const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
@@ -122,12 +124,12 @@ const ImageCard = ({ title, svgUrl, tags ,backgroundColor }) => {
 
   return (
     <>
-      <div className="image-card card p-3 text-center"> {/* Click to open modal */}
-        <h3 className="card-title display-5" onClick={handleOpenModal}>{title}</h3>
+      <div className="image-card card p-3 text-center" onClick={handleOpenModal}>
+        <h3 className="card-title display-5">{title}</h3>
         <div
           className="image-preview"
           style={{ backgroundColor }} // Apply background color to preview
-          dangerouslySetInnerHTML={{ __html: svgContent }} onClick={handleOpenModal}
+          dangerouslySetInnerHTML={{ __html: svgContent }}
         />
         {isLoading && <p>Loading SVG...</p>}
         {hasError && <p className="text-danger">Failed to load SVG.</p>}
@@ -155,6 +157,7 @@ const ImageCard = ({ title, svgUrl, tags ,backgroundColor }) => {
         convertSvgToPng={convertSvgToPng} 
         tags={tags}
         convertSvgToJpeg={convertSvgToJpeg} 
+        otherImages={otherImages} // Pass the otherImages to the ImageModal component
       />
     </>
   );

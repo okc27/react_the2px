@@ -270,3 +270,32 @@ h3 {
   box-shadow: #8f2d36 0 3px 7px inset;
   transform: translateY(2px);
 }
+.slider-container {
+  position: relative;
+  display: flex; /* Make it a flex container */
+  justify-content: center; /* Center the arrows and images */
+  align-items: center; /* Vertically align arrows and images */
+  margin: 0 auto; /* Center the container itself */
+  width: 80%; /* Adjust width as needed */
+}
+
+.arrow {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /* Adjust size as needed */
+  padding: 10px; /* Add padding for a larger click area */
+}
+
+.arrow:hover {
+  opacity: 0.7; /* Slightly dim on hover */
+}
+
+.other-images-container {
+  display: flex;
+  flex-direction: row; /* Align images in a single row */
+  justify-content: center; /* Center images */
+  align-items: center; /* Vertically align images */
+  width: 100%; /* Take full width of the slider */
+  overflow: hidden; /* Prevent overflow */
+}

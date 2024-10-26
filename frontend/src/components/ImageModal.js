@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'; 
 import PropTypes from 'prop-types';
-import { Modal} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import ColorPicker from './ColorPicker';
 import './ImageModal.css';
 
@@ -24,7 +24,7 @@ const throttle = (func, limit) => {
   };
 };
 
-const ImageModal = ({ show, handleClose, image, title, tags }) => {
+const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
   const [colors, setColors] = useState([]);
   const [currentColorIndex, setCurrentColorIndex] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
@@ -34,7 +34,33 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
   const [temporarySvgContent, setTemporarySvgContent] = useState(image);
   const [resolution, setResolution] = useState('original');
   const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+  const [modalTitle, setModalTitle] = useState(title); // State for the modal title
+  const [currentTags, setCurrentTags] = useState(tags);
+  const [currentIndex, setCurrentIndex] = useState(0); 
 
+
+
+  // Set default value for otherImages
+  const filteredOtherImages = Array.isArray(otherImages) ? otherImages.filter(img => img.svg_image_file !== image) : [];
+  const handleLeftArrowClick = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else {
+      // Wrap around to the end
+      setCurrentIndex(filteredOtherImages.length - imagesToShow);
+    }
+  };
+  
+  const handleRightArrowClick = () => {
+    if (currentIndex < filteredOtherImages.length - imagesToShow) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      // Wrap around to the start
+      setCurrentIndex(0);
+    }
+  };
+  
+  
   const extractColors = (svgString) => {
     const colorRegex = /#([0-9A-Fa-f]{3,6})\b/g;
     const foundColors = new Set(svgString.match(colorRegex));
@@ -165,33 +191,81 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
     });
     setShowBgColorPicker(true);
   };
+  const imagesToShow = 5;
+  const renderOtherImages = () => {
+    // Calculate the range of images to display
+    const imagesToDisplay = filteredOtherImages.slice(currentIndex, currentIndex + imagesToShow);
+    
+    return (
+      <div className="other-images-container" style={{ display: 'flex', overflow: 'hidden' }}>
+        {imagesToDisplay.map((img, index) => (
+          <div key={index} className="other-image-container" style={{
+            margin: '5px', 
+            cursor: 'pointer', 
+            width: '70px', 
+            height: '70px',
+            overflow: 'hidden',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#fff',
+          }}>
+            <img
+              src={img.svg_image_file}
+              alt={`SVG Preview ${currentIndex + index}`} 
+              style={{
+                width: '70px',
+                height: '70px',
+                objectFit: 'contain',
+              }}
+              onClick={() => {
+                fetch(img.svg_image_file)
+                  .then(response => response.text())
+                  .then(svgContent => {
+                    setTemporarySvgContent(svgContent);
+                    setModalTitle(img.title.rendered || 'New SVG Image');
+                    setCurrentTags(img.tags || []);
+                  })
+                  .catch(error => {
+                    console.error('Error fetching SVG:', error);
+                  });
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
 
   const renderTags = () => {
-    if (!tags || !Array.isArray(tags)) return null; // Return null if no tags or not an array
-    return tags.map((tag, index) => (
+    if (!currentTags || !Array.isArray(currentTags)) return null; // Return null if no tags or not an array
+    return currentTags.map((tag, index) => (
       <span key={index} className="tag">
         {tag.trim()} {/* Trim whitespace around each tag */}
       </span>
     ));
-};
+  };
 
   return (
     <Modal show={show} onHide={handleClose} size="xl" centered>
       <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title> {/* Update title display */}
       </Modal.Header>
       <Modal.Body>
         <div className="image-modal-container">
-          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%'}}>
+          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%' }}>
             <div
               className="image-preview"
-              style={{ height: '100%', overflow: 'hidden',backgroundColor ,borderradius: '15px'}}
+              style={{ height: '100%', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
               dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
             />
           </div>
 
           <div className='content-section' style={{ width: '60%' }}>
-          <div className="color-container">
+            <div className="color-container">
               <h3>Colors Used in This SVG:</h3>
               <div className="colors">
                 {colors.map((color, index) => (
@@ -208,7 +282,6 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
             <div className="or-spacer">
               <div className="mask"></div>
             </div>
-
 
             {showColorPicker && (
               <ColorPicker
@@ -265,11 +338,10 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
             </div>
             
             <div className="download-section">
-              <button className="button-29" onClick={downloadSvg} >Download SVG</button>
-              <button className="button-29" onClick={convertSvgToPng} >Download PNG</button>
-              <button className="button-29" onClick={convertSvgToJpeg} >Download JPEG</button>
+              <button className="button-29" onClick={downloadSvg}>Download SVG</button>
+              <button className="button-29" onClick={convertSvgToPng}>Download PNG</button>
+              <button className="button-29" onClick={convertSvgToJpeg}>Download JPEG</button>
             </div>
-
 
             <div className="or-spacer">
               <div className="mask"></div>
@@ -281,19 +353,39 @@ const ImageModal = ({ show, handleClose, image, title, tags }) => {
                 {renderTags()} {/* Render the tags here */}
               </div>
             </div>
+
+            <div className="or-spacer">
+              <div className="mask"></div>
+            </div>
+
+            <div className="other-images-footer">
+              <h3>Other SVG Images:</h3>
+              <div className="slider-container" style={{ display: 'flex', alignItems: 'center' }}>
+                <button className="arrow left-arrow" onClick={handleLeftArrowClick}>&#10094;</button>
+                {renderOtherImages()} {/* Render the other SVG images here */}
+                <button className="arrow right-arrow" onClick={handleRightArrowClick}>&#10095;</button>
+              </div>
+            </div>
           </div>
         </div>
       </Modal.Body>
     </Modal>
   );
-  
-};
+}
 
 ImageModal.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   image: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,tags: PropTypes.arrayOf(PropTypes.string), // Change this line
+  title: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string),
+  otherImages: PropTypes.arrayOf(PropTypes.shape({
+    svg_image_file: PropTypes.string.isRequired
+  })),
+};
+
+ImageModal.defaultProps = {
+  otherImages: [], // Provide a default value to avoid TypeError
 };
 
 export default ImageModal;

@@ -24,8 +24,8 @@ const ImageGallery = ({ bgColor, searchInput }) => {
           page++;
         } while (page <= totalPages);
 
-        // Process the images here
-        const decodedData = allImages.map(image => {
+        // Process the images here and store in otherImages
+        const otherImages = allImages.map(image => {
           const fileUrl = image.svg_image_file || '';
           return {
             ...image,
@@ -35,7 +35,9 @@ const ImageGallery = ({ bgColor, searchInput }) => {
           };
         });
 
-        setImages(decodedData);
+        console.log('Other images (decodedData):', otherImages); // Log otherImages data
+
+        setImages(otherImages);
       } catch (error) {
         console.error('Error fetching images:', error);
       }
@@ -67,6 +69,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
                 svgUrl={image.file}
                 tags={image.tags}
                 backgroundColor={bgColor}
+                otherImages={images} // Passing the full data as props to ImageCard
               />
             </div>
           ))
@@ -74,7 +77,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
           searchInput && ( // Display the image and message only if there's input in the search bar
             <div className="col-12 d-flex flex-column align-items-center justify-content-center" style={{ height: '60vh' }}>
               <img
-                src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/image-not-found-1.svg"
+                src="http://localhost/headlesswp/the2px/http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/image-not-found-1.svg"
                 alt="No images found logo"
                 style={{ width: '50%', marginBottom: '15px' }}
               />
