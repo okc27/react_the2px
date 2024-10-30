@@ -17,7 +17,7 @@
 }
 
 .navbar-brand {
-  font-size: 18px;
+  margin-right: 21% !important;
 }
 
 /* Navbar Content Layout */
@@ -43,7 +43,9 @@
   padding-right: 35px;
   transition: border-color 0.3s;
 }
-
+input.form-control {
+  padding-left: 5%;
+}
 .search-bar input:focus {
   border-color: #c1272d;
   outline: none;
@@ -53,7 +55,7 @@
 .search-icon {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -82,6 +84,7 @@
 
 .search-bar.mx-3{
   margin-right: 0px !important;
+  margin-left: 0px  !important;
 }
 /* Mobile Menu Toggle Button */
 .navbar-toggler {
@@ -101,12 +104,25 @@
   padding: 10px;
   border-radius: 10px;
 }
+div#org-nav{
+  justify-content: flex-start;
+}
 
 /* Responsive Styles for Smaller Screens */
 @media (max-width: 875px) {
+  div#org-nav{
+    flex-direction: column;
+  }
   .navbar-logo {
     max-height: 50px;
     width: auto;
+  }
+  .navbar-brand{
+    margin-right: 0px !important;
+    padding-bottom: 1% !important;
+  }
+  .r-div.d-flex.align-items-center{
+    width: 100%;
   }
 
   .search-bar {
@@ -157,7 +173,4 @@
     margin-top: 3px !important;
   }
 
-  input.form-control {
-    font-size: 0.5rem !important;
-  }
 }

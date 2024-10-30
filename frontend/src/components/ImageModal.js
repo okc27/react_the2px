@@ -37,6 +37,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
   const [modalTitle, setModalTitle] = useState(title); // State for the modal title
   const [currentTags, setCurrentTags] = useState(tags);
   const [currentIndex, setCurrentIndex] = useState(0); 
+  const [imagesToShow, setImagesToShow] = useState(window.innerWidth < 440 ? 3 : 5);
 
 
 
@@ -46,19 +47,27 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     } else {
-      // Wrap around to the end
       setCurrentIndex(filteredOtherImages.length - imagesToShow);
     }
   };
-  
+
   const handleRightArrowClick = () => {
     if (currentIndex < filteredOtherImages.length - imagesToShow) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      // Wrap around to the start
       setCurrentIndex(0);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setImagesToShow(window.innerWidth < 440 ? 3 : 5);
+    };
+    
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   
   const extractColors = (svgString) => {
@@ -81,15 +90,40 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     setSvgContent(temporarySvgContent);
   };
 
+  
+  // Format date as YYYYMMDD without dashes
+  const getFormattedDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}${month}${day}`;
+  };
+
+  // Get download file name in the required format
+  const getDownloadFileName = (format) => {
+    const date = getFormattedDate();
+    return `the2px-${title}-${date}.${format}`;
+  };
+
   const downloadSvg = () => {
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title}.svg`;
-    a.click();
+    const websiteComment = `<!-- Downloaded from the2px.com -->\n`;
+    const updatedSvgContent = websiteComment + svgContent; // Prepend the comment to the SVG content
+  
+    const svgBlob = new Blob([updatedSvgContent], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', getDownloadFileName('svg'));
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+
+
 
   const convertSvgToPng = () => {
     const canvas = document.createElement('canvas');
@@ -97,61 +131,84 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
 
     const img = new Image();
     img.onload = () => {
-      let size;
-      if (resolution === 'original') {
-        const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
-        size = {
-          width: svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500,
-          height: svgElement.getAttribute('height') ? parseInt(svgElement.getAttribute('height'), 10) : 500,
-        };
-      } else {
-        size = parseInt(resolution, 10);
-      }
-      canvas.width = size.width || size;
-      canvas.height = size.height || size;
+        let width, height;
+        if (resolution === 'original') {
+            const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
+            width = svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500; // Default width
+            height = svgElement.getAttribute('height') ? parseInt(svgElement.getAttribute('height'), 10) : 500; // Default height
+        } else {
+            const size = parseInt(resolution, 10);
+            width = height = size; // For fixed resolutions, width and height will be the same
+        }
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // Set canvas width and height
+        canvas.width = width;
+        canvas.height = height;
 
-      const pngUrl = canvas.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = pngUrl;
-      a.download = `${title}.png`;
-      a.click();
+        // Calculate aspect ratio
+        const aspectRatio = img.width / img.height;
+
+        // Adjusting the drawImage parameters to keep aspect ratio
+        if (aspectRatio > 1) {
+            // Wider than tall
+            ctx.drawImage(img, 0, (height - (width / aspectRatio)) / 2, width, width / aspectRatio);
+        } else {
+            // Taller than wide
+            ctx.drawImage(img, (width - (height * aspectRatio)) / 2, 0, height * aspectRatio, height);
+        }
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = getDownloadFileName('png');
+        a.click();
     };
     img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`;
-  };
-
+};
   const convertSvgToJpeg = () => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
     const img = new Image();
     img.onload = () => {
-      let size;
-      if (resolution === 'original') {
-        const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
-        size = {
-          width: svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500,
-          height: svgElement.getAttribute('height') ? parseInt(svgElement.getAttribute('height'), 10) : 500,
-        };
-      } else {
-        size = parseInt(resolution, 10);
-      }
-      canvas.width = size.width || size;
-      canvas.height = size.height || size;
+        let width, height;
+        if (resolution === 'original') {
+            const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").documentElement;
+            width = svgElement.getAttribute('width') ? parseInt(svgElement.getAttribute('width'), 10) : 500; // Default width
+            height = svgElement.getAttribute('height') ? parseInt(svgElement.getAttribute('height'), 10) : 500; // Default height
+        } else {
+            const size = parseInt(resolution, 10);
+            width = height = size; // For fixed resolutions, width and height will be the same
+        }
 
-      ctx.fillStyle = backgroundColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // Set canvas width and height
+        canvas.width = width;
+        canvas.height = height;
 
-      const jpegUrl = canvas.toDataURL('image/jpeg', 1.0);
-      const a = document.createElement('a');
-      a.href = jpegUrl;
-      a.download = `${title}.jpeg`;
-      a.click();
+        // Fill background with selected color
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate aspect ratio
+        const aspectRatio = img.width / img.height;
+
+        // Adjusting the drawImage parameters to keep aspect ratio
+        if (aspectRatio > 1) {
+            // Wider than tall
+            ctx.drawImage(img, 0, (height - (width / aspectRatio)) / 2, width, width / aspectRatio);
+        } else {
+            // Taller than wide
+            ctx.drawImage(img, (width - (height * aspectRatio)) / 2, 0, height * aspectRatio, height);
+        }
+
+        const jpegUrl = canvas.toDataURL('image/jpeg', 1.0);
+        const a = document.createElement('a');
+        a.href = jpegUrl;
+        a.download = getDownloadFileName('jpeg');
+        a.click();
     };
     img.src = `data:image/svg+xml;base64,${btoa(temporarySvgContent)}`;
-  };
+};
 
   useEffect(() => {
     if (show) {
@@ -191,35 +248,17 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     });
     setShowBgColorPicker(true);
   };
-  const imagesToShow = 5;
   const renderOtherImages = () => {
-    // Calculate the range of images to display
     const imagesToDisplay = filteredOtherImages.slice(currentIndex, currentIndex + imagesToShow);
-    
+
     return (
       <div className="other-images-container" style={{ display: 'flex', overflow: 'hidden' }}>
         {imagesToDisplay.map((img, index) => (
-          <div key={index} className="other-image-container" style={{
-            margin: '5px', 
-            cursor: 'pointer', 
-            width: '70px', 
-            height: '70px',
-            overflow: 'hidden',
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#fff',
-          }}>
+          <div key={index} className="other-image-container">
             <img
               src={img.svg_image_file}
-              alt={`SVG Preview ${currentIndex + index}`} 
-              style={{
-                width: '70px',
-                height: '70px',
-                objectFit: 'contain',
-              }}
+              alt={`SVG Preview ${currentIndex + index}`}
+              style={{ width: '70px', height: '70px', objectFit: 'contain' }}
               onClick={() => {
                 fetch(img.svg_image_file)
                   .then(response => response.text())
@@ -227,10 +266,9 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
                     setTemporarySvgContent(svgContent);
                     setModalTitle(img.title.rendered || 'New SVG Image');
                     setCurrentTags(img.tags || []);
+                    setColors(extractColors(svgContent)); // Update colors for the selected image
                   })
-                  .catch(error => {
-                    console.error('Error fetching SVG:', error);
-                  });
+                  .catch(error => console.error('Error fetching SVG:', error));
               }}
             />
           </div>
@@ -238,7 +276,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
       </div>
     );
   };
-  
+
 
   const renderTags = () => {
     if (!currentTags || !Array.isArray(currentTags)) return null; // Return null if no tags or not an array
@@ -259,11 +297,10 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
           <div className="image-preview-container" style={{ width: '37%', marginRight: '3%' }}>
             <div
               className="image-preview"
-              style={{ height: '100%', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
+              style={{ height: 'auto', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
               dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
             />
           </div>
-
           <div className='content-section' style={{ width: '60%' }}>
             <div className="color-container">
               <h3>Colors Used in This SVG:</h3>
@@ -318,7 +355,8 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
               <div className="mask"></div>
             </div>
             <div className="res-sec">
-              <h3><span>Select Resolution:</span></h3>
+              <h3  style={{ marginLeft: '10px' }}><span>Select Resolution:</span></h3>
+              <div className='b-35'>
               <button className={`button-35 ${resolution === 'original' ? 'active' : ''}`} onClick={() => handleResolutionChange('original')}>
                 Original
               </button>
@@ -332,7 +370,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
                 2000 x 2000
               </button>
             </div>
-
+            </div>
             <div className="or-spacer">
               <div className="mask"></div>
             </div>
@@ -348,7 +386,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             </div>
 
             <div className='tag-sec'>
-              <h5>Tags:</h5>
+              <h3>Tags:</h3>
               <div className="tags-container">
                 {renderTags()} {/* Render the tags here */}
               </div>
@@ -382,10 +420,6 @@ ImageModal.propTypes = {
   otherImages: PropTypes.arrayOf(PropTypes.shape({
     svg_image_file: PropTypes.string.isRequired
   })),
-};
-
-ImageModal.defaultProps = {
-  otherImages: [], // Provide a default value to avoid TypeError
 };
 
 export default ImageModal;

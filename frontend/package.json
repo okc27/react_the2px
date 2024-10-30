@@ -44,5 +44,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://react.the2px.com"
+  "proxy": "http://localhost/headlesswp/the2px/"
 }

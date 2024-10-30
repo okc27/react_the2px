@@ -18,5 +18,14 @@ RewriteRule . /headlesswp/the2px/index.php [L]
 # The directives (lines) between "BEGIN enable-cors" and "END enable-cors" are
 # dynamically generated, and should only be modified via WordPress filters.
 # Any changes to the directives between these markers will be overwritten.
-
+<IfModule mod_headers.c>
+<FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css|css|woff2)$">
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Credentials true
+</FilesMatch>
+<FilesMatch "\.(avifs?|bmp|cur|gif|ico|jpe?g|jxl|a?png|svgz?|webp)$">
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Credentials true
+</FilesMatch>
+</IfModule>
 # END enable-cors

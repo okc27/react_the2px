@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import './navbar.css'; // Ensure to import your CSS file for custom styles
 
 const Navbar = ({ searchInput, setSearchInput }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false); // State to track input focus
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -10,6 +11,15 @@ const Navbar = ({ searchInput, setSearchInput }) => {
   };
 
   useEffect(() => {
+    // Preload images
+    const preloadImages = () => {
+      const img1 = new Image();
+      const img2 = new Image();
+      img1.src = "http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/search-svgrepo-com.svg";
+      img2.src = "http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/right-arrow-svgrepo-com.svg";
+    };
+
+    preloadImages();
     window.addEventListener('scroll', handleScroll);
 
     return () => {
@@ -33,14 +43,20 @@ const Navbar = ({ searchInput, setSearchInput }) => {
               className="form-control"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              onFocus={() => setIsInputFocused(true)} // Set input focus state to true
+              onBlur={() => setIsInputFocused(false)} // Reset input focus state
             />
-            <span className="search-icon">
-              {/* Update the search icon URL */}
-              <img src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/search-svgrepo-com.svg" alt="Search Icon" width="20" height="20" />
-            </span>
+            <div className='s-icn'>
+              <span className="search-icon">
+                {/* Conditionally render icons based on input focus */}
+                {isInputFocused ? (
+                  <img src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/right-arrow-svgrepo-com.svg" alt="Arrow Icon" width="20" height="20" className="inverted-arrow yellow-icon" />
+                ) : (
+                  <img src="http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/search-svgrepo-com.svg" alt="Search Icon" width="20" height="20" className="yellow-icon" />
+                )}
+              </span>
+            </div>
           </div>
-          
-          
         </div>
       </div>
     </nav>

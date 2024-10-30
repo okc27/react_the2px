@@ -40,6 +40,13 @@ h3{
   font-size: 1.75rem;
   font-weight: bold;
 }
+.b-35 {
+  padding: 10px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  flex-wrap: wrap;         /* Allow wrapping for smaller screen sizes */
+}
 
 .button-35 {
   align-items: center;
@@ -51,8 +58,8 @@ h3{
   display: inline-flex;
   flex: 1 1 auto;
   font-family: Inter, sans-serif;
-  font-size: 1rem; /* Reduced font size */
-  font-weight: 700;
+  font-size: 0.75rem; /* Reduced font size */
+  font-weight: 500;
   justify-content: center;
   line-height: 1;
   margin: 0.5rem; /* Add margin for spacing between buttons */
@@ -78,13 +85,6 @@ h3{
   transform: scale(1.05); /* Slightly increase size of selected button */
 }
 
-/* Media query for responsiveness */
-@media (max-width: 768px) {
-  .button-35 {
-    font-size: 0.9rem; /* Further adjust font size for smaller screens */
-    padding: 0.4rem 0.8rem; /* Further adjust padding for smaller screens */
-  }
-}
 
 button.btn {
   background-color: black;
@@ -99,7 +99,6 @@ button.btn {
   justify-content: space-between;
   width: 100%;
 }
-
 .image-preview-container {
   background-color: #fdfdfd;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -277,25 +276,98 @@ h3 {
   align-items: center; /* Vertically align arrows and images */
   margin: 0 auto; /* Center the container itself */
   width: 80%; /* Adjust width as needed */
+  max-width: 600px; /* Optional: set a max width */
 }
 
+/* Arrows */
 .arrow {
   background-color: transparent;
   border: none;
   cursor: pointer;
   font-size: 24px; /* Adjust size as needed */
   padding: 10px; /* Add padding for a larger click area */
+  z-index: 1; /* Ensure arrows are above the images */
 }
 
 .arrow:hover {
   opacity: 0.7; /* Slightly dim on hover */
 }
 
-.other-images-container {
+/* Other images */
+.other-image-container {
+  margin: 5px;
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   display: flex;
-  flex-direction: row; /* Align images in a single row */
-  justify-content: center; /* Center images */
-  align-items: center; /* Vertically align images */
-  width: 100%; /* Take full width of the slider */
-  overflow: hidden; /* Prevent overflow */
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 1220px) {
+  .slider-container {
+    width: 100%; /* Allow slider to take more space on smaller screens */
+  }
+  .other-image-container{
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .image-modal-container{
+    display: block;
+  }
+  .image-preview-container{
+    height: 30%;
+    width: 100% !important;
+    margin-bottom: 5%;
+  }
+  .content-section{
+    height: 67%;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .image-modal-container{
+    display: block;
+  }
+  .image-preview-container{
+    height: 20%;
+    width: 100% !important;
+    margin-bottom: 5%;
+  }
+  .content-section{
+    height: auto;
+    width: 100% !important;
+  }
+  .modal-content{
+    height: auto;
+  }
+  .button-35{
+    font-size: 0.75rem;
+    width: 45%;
+  }
+  .download-section button{
+    font-size: 0.75rem;}
+
+  h3, .tag{
+    line-height: 1;
+    font-size: 0.75rem !important;
+  }
+
+}
+@media (max-width:380px) {
+
+  .button-35{
+    font-size: 0.75rem;
+    width: 100%;
+  }
+
 }

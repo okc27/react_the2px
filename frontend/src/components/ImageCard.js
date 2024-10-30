@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './ImageCard.css';
-import ImageModal from './ImageModal'; // Import the ImageModal component
+import ImageModal from './ImageModal';
 
-const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
+const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) => {
   const [svgContent, setSvgContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    console.log('Received otherImages in ImageCard:', otherImages); // Log the otherImages data
+    console.log('Received otherImages in ImageCard:', otherImages);
 
     const fetchSvgContent = async () => {
       try {
@@ -29,15 +29,25 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
     };
 
     fetchSvgContent();
-  }, [svgUrl, otherImages]); // Also depend on otherImages for re-fetch if needed
+  }, [svgUrl, otherImages]);
 
+  const getFileName = (extension) => {
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    return `the2px-${title}-${date}.${extension}`;
+  };
+  
+  
   const downloadSvg = () => {
-    const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+    // Add a comment with the website name to the SVG content
+    const websiteComment = `<!-- Downloaded from the2px.com -->\n`;
+    const updatedSvgContent = websiteComment + svgContent; // Prepend the comment to the SVG content
+  
+    const svgBlob = new Blob([updatedSvgContent], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
-
+  
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${title}.svg`);
+    link.setAttribute('download', getFileName('svg'));
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -67,7 +77,7 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
       canvas.toBlob((blob) => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${title}.png`;
+        link.download = getFileName('png');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -105,7 +115,7 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
       canvas.toBlob((blob) => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${title}.jpeg`;
+        link.download = getFileName('jpeg');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -124,12 +134,13 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
 
   return (
     <>
-      <div className="image-card card p-3 text-center" onClick={handleOpenModal}>
+      <div className="image-card card p-3 text-center">
         <h3 className="card-title display-5">{title}</h3>
         <div
           className="image-preview"
-          style={{ backgroundColor }} // Apply background color to preview
-          dangerouslySetInnerHTML={{ __html: svgContent }}
+          style={{ backgroundColor }}
+          dangerouslySetInnerHTML={{ __html: svgContent }} 
+          onClick={handleOpenModal}
         />
         {isLoading && <p>Loading SVG...</p>}
         {hasError && <p className="text-danger">Failed to load SVG.</p>}
@@ -152,12 +163,13 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages }) => {
         show={showModal} 
         handleClose={handleCloseModal} 
         title={title} 
-        image={svgContent} // Pass the clicked image's content
+        image={svgContent}
         downloadSvg={downloadSvg} 
         convertSvgToPng={convertSvgToPng} 
         tags={tags}
         convertSvgToJpeg={convertSvgToJpeg} 
-        otherImages={otherImages} // Pass the otherImages to the ImageModal component
+        otherImages={otherImages}
+        imgid={ids}
       />
     </>
   );
