@@ -42,6 +42,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
   const [showMoreColors, setShowMoreColors] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState('svg');
   const [isDownloading, setIsDownloading] = useState(false);
+  
 
   useEffect(() => {
     const preloadImages = () => {
@@ -369,6 +370,23 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             onClick={(event) => handleColorCircleClick(index, event)}
           />
         ))}
+        {/* Show More/Less Button */}
+        {colors.length > 3 && (
+          <button
+            className="edit-more-colors"
+            onClick={() => setShowMoreColors(!showMoreColors)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'blue',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              marginTop: '10px' // Add some margin for better spacing
+            }}
+          >
+            {showMoreColors ? 'Show Less' : 'Edit More Colors'}
+          </button>
+        )}
       </div>
     );
   };
@@ -391,15 +409,15 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="image-modal-container">
-            <div className="image-preview-container" style={{ width: '250px',height: '250px', marginRight: '3%' }}>
-              <div
-                className="image-preview"
-                style={{ height: 'auto', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
-                dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
-              />
-            </div>
+          <div className="image-preview-container" style={{ width: '75%', height: '75%', marginRight: '3%' }}>
+            <div
+              className="image-preview"
+              style={{ height: 'auto', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
+              dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
+            />
+          </div>
             <div className="content-section">
-              <span className="customize-label">Customize Color: </span>
+              <span className="customize-label">Customize Color </span>
               
               <div className="color-picker-row">
                 {/* Background color picker */}
@@ -414,15 +432,9 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
                 
                 {/* SVG color picker */}
                 <div className="colors">
-                    {renderColorPickers()} {/* Render initial color pickers */}
-                    {!showMoreColors && colors.length > 3 && (
-                      <button className="edit-more-colors" onClick={() => setShowMoreColors(true)} style={{ background: 'none', border: 'none', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
-                         Edit more colors
-                      </button>
-
-                    )}
-                  </div>
-                </div>
+                {renderColorPickers()} {/* Render initial color pickers */}
+              </div>
+              </div>
 
                 {showColorPicker && (
                   <ColorPicker
@@ -454,7 +466,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             <div className="selection-container">
             <div className="res-sec">
             <h3 style={{ paddingLeft: '5%' }}>
-                <span>Formate:</span>
+                <span>Format</span>
                 </h3>
               <div className='b-35'>
               <button className={`button-35 ${selectedFormat === 'svg' ? 'active' : ''}`} onClick={() => setSelectedFormat('svg')}>
@@ -471,9 +483,12 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             
             <div className="format-selection">
               <h3 style={{ paddingLeft: '5%'}}>
-                <span>Resolution:</span>
+                <span>Resolution</span>
               </h3>
               <div className='b-35'>
+                <button className={`button-35 ${resolution === 'original' ? 'active' : ''}`} onClick={() => handleResolutionChange('original')}>
+                  1920 x 1356
+                </button>
                 <button className={`button-35 ${resolution === '500' ? 'active' : ''}`} onClick={() => handleResolutionChange('500')}>
                   500 x 500
                 </button>
@@ -517,7 +532,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             </div>
 
             <div className="other-images-footer">
-              <h3>Other SVG Images:</h3>
+              <h3>Other SVG Images</h3>
               <div className="slider-container" style={{ display: 'flex', alignItems: 'center' }}>
                 <button className="arrow left-arrow" onClick={handleLeftArrowClick}>&#10094;</button>
                 {renderOtherImages()} {/* Render the other SVG images here */}

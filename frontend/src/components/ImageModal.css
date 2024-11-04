@@ -1,8 +1,11 @@
+.image-preview-container img, .image-preview-container svg {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 .selection-container {
   display: flex; /* Use flexbox for layout */
   flex-wrap: wrap; /* Allow wrapping on small screens */
   justify-content: space-between; /* Space between items */
-  align-items: center; /* Center items vertically */
   padding: 10px; /* Add some padding for spacing */
 }
 
@@ -42,6 +45,11 @@
   border-bottom: 2px solid black;
 }
 
+.modal-content{
+  width: 75% !important;
+  margin-left: 14.5%;
+}
+
 .modal-title {
   font-size: 1.75rem;
   font-weight: 500;
@@ -51,6 +59,7 @@
   padding: 0px;
   display: flex;
   width: 93%;
+  justify-content: space-between;
   align-items: center;     /* Center vertically */
   flex-wrap: wrap;         /* Allow wrapping for smaller screen sizes */
 }
@@ -150,7 +159,6 @@ button.btn {
 
 .color-picker-row {
   display: flex;
-  align-items: center;
 }
 
 .color-circle {
@@ -167,7 +175,6 @@ button.btn {
   height: 30px;
   cursor: pointer;
   border-radius: 5px;
-  margin-left: 10px;
   border: 0.50px solid black;
   transition: width 0.3s ease, height 0.3s ease;
 }
@@ -196,20 +203,18 @@ a.edit-more-colors{
   a.edit-more-colors{
     font-size: 0.75rem;
   }
-
-  .color-circle {
-    width: 25px;
-    height: 25px;
-    margin-right: 8px;
-    margin-left: 8px;
-  }
-
   .bg-color-circle {
-    width: 25px;
-    height: 25px;
+    margin-bottom: 10px;
   }
   .separator {
-    height: 25px;
+    display: none;
+  }
+  .content-section{
+    display: block;
+  }
+  .color-picker-row{
+    margin-top: 10px;
+    display: block;;
   }
 }
 
@@ -219,23 +224,10 @@ a.edit-more-colors{
     margin-right: 8px;
   }
 
-  .color-circle {
-    width: 20px;
-    height: 20px;
-    margin-right: 6px;
-    margin-left: 6px;
-  }
-
-  .bg-color-circle {
-    width: 20px;
-    height: 20px;
-  }
   a.edit-more-colors{
     font-size: 0.5rem;
   }
-  .separator {
-    height: 20px;
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -243,25 +235,7 @@ a.edit-more-colors{
     font-size: 0.85rem;
     margin-right: 5px;
   }
-
-  .color-circle {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-    margin-left: 5px;
-  }
-  .bg-color-circle {
-    width: 15px;
-    height: 15px;
-  }
-
-  .separator {
-    height: 18px;
-  }
 }
-
-
-
 
 h3 {
   font-size: 1rem !important;
@@ -329,7 +303,7 @@ h3 {
   padding: 1px 20px; /* Padding to create oval shape */
   border-radius: 50px; /* High border-radius for the oval effect */
   margin: 5px; /* Margin for spacing between tags */
-  font-size: 0.75rem; /* Font size */
+  font-size: 1rem; /* Font size */
   transition: background-color 0.3s ease; /* Smooth background change */
 }
 .tags-container {

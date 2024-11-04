@@ -13,7 +13,7 @@
   margin-top: 0px;
   padding-bottom: 5px;
   font-size: 1rem;
-  color: #c1272d;
+  color: black;
 }
 
 /* Ensure the image preview scales correctly */
@@ -34,9 +34,9 @@ img {
   background: #fdfdfd;
   border-radius: 2px;
   border: 1px solid #EFEFEF;
-  height: auto; /* Change from fixed height to auto */
-  padding: 20px;
-  max-width: 100%; /* Ensure it takes the full width of the column */
+  height: 250px;
+  width: 100%;
+  padding: 10px;
 }
 
 /* Hover effect */
@@ -44,11 +44,11 @@ img {
   transform: scale(0.85) translateY(-20px);
 }
 
-.image-preview svg {
+svg {
   width: 100%;
   padding: 5px;
-  height: 150px !important; /* Maintain aspect ratio */
-  max-height: 100%; /* Ensure it does not exceed the image preview height */
+  max-height: 80%;
+  margin: 25px auto; /* Ensure it does not exceed the image preview height */
 }
 
 /* Hide download buttons by default */
@@ -152,10 +152,6 @@ button.btn.btn-warning:hover {
   .col-4.mb-4 {
     flex: 0 0 50%;
     max-width: 50%;
-  }
-
-  .image-card.card.p-3.text-center {
-    height: auto; /* Allow height to adjust automatically */
   }
 }
 
