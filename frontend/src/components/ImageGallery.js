@@ -4,7 +4,7 @@ import ImageCard from './ImageCard';
 
 const ImageGallery = ({ bgColor, searchInput }) => {
   const [images, setImages] = useState([]);
-  const noImageFoundUrl = "http://localhost/headlesswp/the2px/wp-content/uploads/2024/10/image-not-found-1.svg";
+  const noImageFoundUrl = "https://react.the2px.com/wp-content/uploads/2024/10/image-not-found-1.svg";
 
   useEffect(() => {
     // Preload the "no images found" image
@@ -18,7 +18,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
         let totalPages;
 
         do {
-          const response = await fetch(`http://localhost/headlesswp/the2px/wp-json/wp/v2/svg_images?per_page=100&page=${page}`);
+          const response = await fetch(`https://react.the2px.com/wp-json/wp/v2/svg_images?per_page=100&page=${page}`);
           if (!response.ok) {
             throw new Error(`Error fetching images: ${response.statusText}`);
           }
@@ -33,7 +33,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
           const fileUrl = image.svg_image_file || '';
           return {
             ...image,
-            file: fileUrl.startsWith('http') ? fileUrl : `http://localhost/headlesswp/the2px/${fileUrl}`,
+            file: fileUrl.startsWith('http') ? fileUrl : `https://react.the2px.com/${fileUrl}`,
             tags: image.svg_image_tags ? image.svg_image_tags.split(',') : [],
           };
         });

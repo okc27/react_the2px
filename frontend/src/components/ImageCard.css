@@ -19,8 +19,6 @@
 /* Ensure the image preview scales correctly */
 .image-preview {
   width: 100%; /* Take full width of the card */
-  height: auto; /* Auto height to maintain aspect ratio */
-  max-height: 350px; /* Optional: Set a max height */
   margin: 0 auto;
   overflow: hidden;
   border-radius: 8px;
@@ -48,7 +46,8 @@ img {
 
 .image-preview svg {
   width: 100%;
-  height: auto; /* Maintain aspect ratio */
+  padding: 5px;
+  height: 150px !important; /* Maintain aspect ratio */
   max-height: 100%; /* Ensure it does not exceed the image preview height */
 }
 
@@ -234,7 +233,6 @@ button.btn.btn-warning:hover {
 
 .image-preview {
   width: 100%;
-  height: auto; /* Keep height auto for responsiveness */
 }
 
 .modal-body {

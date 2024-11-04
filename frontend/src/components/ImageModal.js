@@ -8,6 +8,7 @@ const throttle = (func, limit) => {
   let lastFunc;
   let lastRan;
 
+
   return (...args) => {
     if (!lastRan) {
       func(...args);
@@ -38,9 +39,24 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
   const [currentTags, setCurrentTags] = useState(tags);
   const [currentIndex, setCurrentIndex] = useState(0); 
   const [imagesToShow, setImagesToShow] = useState(window.innerWidth < 440 ? 3 : 5);
+  const [showMoreColors, setShowMoreColors] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState('svg');
+  const [isDownloading, setIsDownloading] = useState(false);
 
+  useEffect(() => {
+    const preloadImages = () => {
+      const images = [
+        "https://react.the2px.com/wp-content/uploads/2024/10/download-svgrepo-com.svg",
+        "https://react.the2px.com/wp-content/uploads/2024/10/save-1.svg",
+      ];
+      images.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
 
-
+    preloadImages();
+  }, []);
   // Set default value for otherImages
   const filteredOtherImages = Array.isArray(otherImages) ? otherImages.filter(img => img.svg_image_file !== image) : [];
   const handleLeftArrowClick = () => {
@@ -75,6 +91,21 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     const foundColors = new Set(svgString.match(colorRegex));
     return Array.from(foundColors);
   };
+
+   useEffect(() => {
+    const preloadImages = () => {
+      const images = [
+        "https://react.the2px.com/wp-content/uploads/2024/10/download-svgrepo-com.svg",
+        "https://react.the2px.com/wp-content/uploads/2024/10/save-1.svg",
+      ];
+      images.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+
+    preloadImages();
+  }, []);
 
   const updateColor = throttle((index, newColor) => {
     const updatedColors = [...colors];
@@ -249,16 +280,56 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     setShowBgColorPicker(true);
   };
   const renderOtherImages = () => {
-    const imagesToDisplay = filteredOtherImages.slice(currentIndex, currentIndex + imagesToShow);
-
+    // Check screen width
+    const isSmallScreen = window.innerWidth < 400;
+  
+    // Define the sizes for each container based on screen size
+    const containerSizes = isSmallScreen
+      ? [
+          { width: '75%', height: '75%', zIndex: 2 }, // Smaller screen container sizes
+          { width: '90%', height: '90%', zIndex: 4 },
+          { width: '75%', height: '75%', zIndex: 2 }
+        ]
+      : [
+          { width: '65%', height: '65%', zIndex: 1 }, // Default sizes for larger screens
+          { width: '80%', height: '80%', zIndex: 2 },
+          { width: '100%', height: '100%', zIndex: 4 },
+          { width: '80%', height: '80%', zIndex: 2 },
+          { width: '65%', height: '65%', zIndex: 1 }
+        ];
+  
+    // Adjust number of images to display based on screen size
+    const imagesToDisplay = isSmallScreen
+      ? filteredOtherImages.slice(currentIndex, currentIndex + 3) // Only 3 images for small screens
+      : filteredOtherImages.slice(currentIndex, currentIndex + imagesToShow);
+  
     return (
-      <div className="other-images-container" style={{ display: 'flex', overflow: 'hidden' }}>
+      <div className="other-images-container" style={{ 
+        display: 'flex', 
+        overflow: 'hidden', 
+        justifyContent: 'center', 
+        alignItems: 'center', // Center items vertically if needed
+        height: '100%' // Set a height for the parent container to center properly
+      }}>
         {imagesToDisplay.map((img, index) => (
-          <div key={index} className="other-image-container">
+          <div key={index} className="other-image-container" style={{ 
+            marginLeft: index === 0 ? '0' : '-10%', // Overlap by 10%
+            width: containerSizes[index % containerSizes.length].width,
+            height: containerSizes[index % containerSizes.length].height,
+            display: 'flex', // Center content in the container
+            justifyContent: 'center', // Center the image horizontally in the container
+            alignItems: 'center', // Center the image vertically in the container
+            position: 'relative', // Ensure overlapping works properly
+            zIndex: containerSizes[index % containerSizes.length].zIndex // Use the zIndex from containerSizes
+          }}>
             <img
               src={img.svg_image_file}
               alt={`SVG Preview ${currentIndex + index}`}
-              style={{ width: '70px', height: '70px', objectFit: 'contain' }}
+              style={{ 
+                width: '100%', // Set the image to fill the container
+                height: '100%', 
+                objectFit: 'contain' 
+              }}
               onClick={() => {
                 fetch(img.svg_image_file)
                   .then(response => response.text())
@@ -276,8 +347,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
       </div>
     );
   };
-
-
+  
   const renderTags = () => {
     if (!currentTags || !Array.isArray(currentTags)) return null; // Return null if no tags or not an array
     return currentTags.map((tag, index) => (
@@ -287,6 +357,33 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     ));
   };
 
+  const renderColorPickers = () => {
+    const visibleColors = showMoreColors ? colors : colors.slice(0, 3); // Show 3 colors initially
+    return (
+      <div className="colors">
+        {visibleColors.map((color, index) => (
+          <div
+            key={index}
+            className="color-circle"
+            style={{ backgroundColor: color }}
+            onClick={(event) => handleColorCircleClick(index, event)}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const handleDownload = () => {
+    if (selectedFormat === 'svg') {
+      downloadSvg();
+    } else if (selectedFormat === 'png') {
+      convertSvgToPng();
+    } else if (selectedFormat === 'jpeg') {
+      convertSvgToJpeg();
+    }
+    setIsDownloading(true)
+  };
+
   return (
     <Modal show={show} onHide={handleClose} size="xl" centered>
       <Modal.Header closeButton>
@@ -294,95 +391,119 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="image-modal-container">
-          <div className="image-preview-container" style={{ width: '37%', marginRight: '3%' }}>
-            <div
-              className="image-preview"
-              style={{ height: 'auto', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
-              dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
-            />
-          </div>
-          <div className='content-section' style={{ width: '60%' }}>
-            <div className="color-container">
-              <h3>Colors Used in This SVG:</h3>
-              <div className="colors">
-                {colors.map((color, index) => (
-                  <div 
-                    key={index} 
-                    className="color-circle" 
-                    style={{ backgroundColor: color }} 
-                    onClick={(event) => handleColorCircleClick(index, event)}
+            <div className="image-preview-container" style={{ width: '250px',height: '250px', marginRight: '3%' }}>
+              <div
+                className="image-preview"
+                style={{ height: 'auto', overflow: 'hidden', backgroundColor, borderRadius: '15px' }}
+                dangerouslySetInnerHTML={{ __html: temporarySvgContent }}
+              />
+            </div>
+            <div className="content-section">
+              <span className="customize-label">Customize Color: </span>
+              
+              <div className="color-picker-row">
+                {/* Background color picker */}
+                <div 
+                  className="bg-color-circle" 
+                  style={{ backgroundColor }} 
+                  onClick={handleBgColorClick}
+                />
+                
+                {/* Separator */}
+                <div className="separator"></div>
+                
+                {/* SVG color picker */}
+                <div className="colors">
+                    {renderColorPickers()} {/* Render initial color pickers */}
+                    {!showMoreColors && colors.length > 3 && (
+                      <button className="edit-more-colors" onClick={() => setShowMoreColors(true)} style={{ background: 'none', border: 'none', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
+                         Edit more colors
+                      </button>
+
+                    )}
+                  </div>
+                </div>
+
+                {showColorPicker && (
+                  <ColorPicker
+                    color={colors[currentColorIndex]}
+                    onChange={handleColorChange}
+                    onClose={() => {
+                      applyChangesToOriginal();
+                      setShowColorPicker(false);
+                      setCurrentColorIndex(null);
+                    }}
+                    position={pickerPosition}
                   />
-                ))}
+                )}
+
+              {showBgColorPicker && (
+                <ColorPicker
+                  color={backgroundColor}
+                  onChange={handleBgColorChange}
+                  onClose={() => {
+                    setShowBgColorPicker(false);
+                  }}
+                  position={pickerPosition}
+                />
+              )}
+            </div>
+   
+            <div className="or-spacer">
+            </div>
+            <div className="selection-container">
+            <div className="res-sec">
+            <h3 style={{ paddingLeft: '5%' }}>
+                <span>Formate:</span>
+                </h3>
+              <div className='b-35'>
+              <button className={`button-35 ${selectedFormat === 'svg' ? 'active' : ''}`} onClick={() => setSelectedFormat('svg')}>
+                SVG
+              </button>
+              <button className={`button-35 ${selectedFormat === 'png' ? 'active' : ''}`} onClick={() => setSelectedFormat('png')}>
+                PNG
+              </button>
+              <button className={`button-35 ${selectedFormat === 'jpeg' ? 'active' : ''}`} onClick={() => setSelectedFormat('jpeg')}>
+                JPEG
+              </button>
               </div>
             </div>
             
-            <div className="or-spacer">
-              <div className="mask"></div>
-            </div>
-
-            {showColorPicker && (
-              <ColorPicker
-                color={colors[currentColorIndex]}
-                onChange={handleColorChange}
-                onClose={() => {
-                  applyChangesToOriginal();
-                  setShowColorPicker(false);
-                  setCurrentColorIndex(null);
-                }}
-                position={pickerPosition}
-              />
-            )}
-            <div className="bg-color-container">
-              <h3>Background Color:</h3>
-              <div 
-                className="bg-color-circle" 
-                style={{ backgroundColor }} 
-                onClick={handleBgColorClick}
-              />
-            </div>
-            {showBgColorPicker && (
-              <ColorPicker
-                color={backgroundColor}
-                onChange={handleBgColorChange}
-                onClose={() => {
-                  setShowBgColorPicker(false);
-                }}
-                position={pickerPosition}
-              />
-            )}
-
-            <div className="or-spacer">
-              <div className="mask"></div>
-            </div>
-            <div className="res-sec">
-              <h3  style={{ marginLeft: '10px' }}><span>Select Resolution:</span></h3>
+            <div className="format-selection">
+              <h3 style={{ paddingLeft: '5%'}}>
+                <span>Resolution:</span>
+              </h3>
               <div className='b-35'>
-              <button className={`button-35 ${resolution === 'original' ? 'active' : ''}`} onClick={() => handleResolutionChange('original')}>
-                Original
-              </button>
-              <button className={`button-35 ${resolution === '500' ? 'active' : ''}`} onClick={() => handleResolutionChange('500')}>
-                500 x 500
-              </button>
-              <button className={`button-35 ${resolution === '1000' ? 'active' : ''}`} onClick={() => handleResolutionChange('1000')}>
-                1000 x 1000
-              </button>
-              <button className={`button-35 ${resolution === '2000' ? 'active' : ''}`} onClick={() => handleResolutionChange('2000')}>
-                2000 x 2000
-              </button>
+                <button className={`button-35 ${resolution === '500' ? 'active' : ''}`} onClick={() => handleResolutionChange('500')}>
+                  500 x 500
+                </button>
+                <button className={`button-35 ${resolution === '1000' ? 'active' : ''}`} onClick={() => handleResolutionChange('1000')}>
+                  1000 x 1000
+                </button>
+                <button className={`button-35 ${resolution === '2000' ? 'active' : ''}`} onClick={() => handleResolutionChange('2000')}>
+                  2000 x 2000
+                </button>
             </div>
             </div>
-            <div className="or-spacer">
-              <div className="mask"></div>
-            </div>
+          </div>
             
             <div className="download-section">
-              <button className="button-29" onClick={downloadSvg}>Download SVG</button>
-              <button className="button-29" onClick={convertSvgToPng}>Download PNG</button>
-              <button className="button-29" onClick={convertSvgToJpeg}>Download JPEG</button>
-            </div>
+            <button className="button-29" onClick={handleDownload}>
+              Download
+              <img
+                src={isDownloading ? "https://react.the2px.com/wp-content/uploads/2024/10/save-1.svg" : "https://react.the2px.com/wp-content/uploads/2024/10/download-svgrepo-com.svg"}
+                alt={isDownloading ? "Save Icon" : "Download Icon"}
+                style={{
+                  marginLeft: '10px',
+                  height: '20px',
+                  width: '20px',
+                  filter: isDownloading ? 'invert(100%)' : 'invert(100%)' // This will ensure the first icon is also white
+                }}
+              />
+            </button>
 
+          </div>
             <div className="or-spacer">
-              <div className="mask"></div>
             </div>
 
             <div className='tag-sec'>
@@ -393,7 +514,6 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             </div>
 
             <div className="or-spacer">
-              <div className="mask"></div>
             </div>
 
             <div className="other-images-footer">
@@ -405,7 +525,6 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
               </div>
             </div>
           </div>
-        </div>
       </Modal.Body>
     </Modal>
   );

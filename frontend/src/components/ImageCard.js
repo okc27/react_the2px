@@ -9,7 +9,6 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) =
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    console.log('Received otherImages in ImageCard:', otherImages);
 
     const fetchSvgContent = async () => {
       try {
@@ -142,6 +141,7 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) =
           dangerouslySetInnerHTML={{ __html: svgContent }} 
           onClick={handleOpenModal}
         />
+
         {isLoading && <p>Loading SVG...</p>}
         {hasError && <p className="text-danger">Failed to load SVG.</p>}
         
