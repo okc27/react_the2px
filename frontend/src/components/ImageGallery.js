@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImageCard from './ImageCard';
 
-const ImageGallery = ({ bgColor, searchInput }) => {
+const ImageGallery = ({ bgColor, searchInput, setSearchInput }) => {
   const [images, setImages] = useState([]);
-  const noImageFoundUrl = "https://react.the2px.com//wp-content/uploads/2024/10/image-not-found-1.svg";
+  const [selectedCategory] = useState('all');
+  const noImageFoundUrl = "https://react.the2px.com/wp-content/uploads/2024/10/image-not-found-1.svg";
 
   useEffect(() => {
     // Preload the "no images found" image
@@ -18,7 +19,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
         let totalPages;
 
         do {
-          const response = await fetch(`https://react.the2px.com//wp-json/wp/v2/svg_images?per_page=100&page=${page}`);
+          const response = await fetch(`https://react.the2px.com/wp-json/wp/v2/svg_images?per_page=100&page=${page}`);
           if (!response.ok) {
             throw new Error(`Error fetching images: ${response.statusText}`);
           }
@@ -33,7 +34,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
           const fileUrl = image.svg_image_file || '';
           return {
             ...image,
-            file: fileUrl.startsWith('http') ? fileUrl : `https://react.the2px.com//${fileUrl}`,
+            file: fileUrl.startsWith('http') ? fileUrl : `https://react.the2px.com/${fileUrl}`,
             tags: image.svg_image_tags ? image.svg_image_tags.split(',') : [],
           };
         });
@@ -50,12 +51,27 @@ const ImageGallery = ({ bgColor, searchInput }) => {
   const filteredImages = images.filter(image => {
     const searchValue = searchInput.toLowerCase();
     const tags = image.tags ? image.tags.join(' ') : '';
+    const categories = Array.isArray(image.svg_file_categorie)
+      ? image.svg_file_categorie.map(cat => cat.toLowerCase())
+      : [];
+
+    // Category filter based on the selected category
+    const categoryMatches = selectedCategory === 'all' || categories.includes(selectedCategory);
+
     return (
-      tags.toLowerCase().includes(searchValue) ||
-      (image.description && image.description.toLowerCase().includes(searchValue)) ||
-      (image.title.rendered && image.title.rendered.toLowerCase().includes(searchValue))
+      categoryMatches && // Ensure the image matches the selected category
+      (tags.toLowerCase().includes(searchValue) ||
+      categories.some(category => category.includes(searchValue)) ||
+      (image.title.rendered && image.title.rendered.toLowerCase().includes(searchValue)))
     );
   });
+
+  
+  // Function to handle tag received from modal and trigger download of the first image
+  const handleTagFromModal = (tagName) => {
+    setSearchInput(tagName); // Set the search input to the tag name
+  };
+
 
   return (
     <div className="image-gallery container">
@@ -71,6 +87,8 @@ const ImageGallery = ({ bgColor, searchInput }) => {
                 backgroundColor={bgColor}
                 otherImages={images}
                 ids={image.id}
+                categories={image.svg_file_categorie} // Add this line to pass categories
+                onTagClick={handleTagFromModal} // Pass the callback to ImageCard.
               />
             </div>
           ))
@@ -94,6 +112,7 @@ const ImageGallery = ({ bgColor, searchInput }) => {
 ImageGallery.propTypes = {
   bgColor: PropTypes.string,
   searchInput: PropTypes.string.isRequired,
+  setSearchInput: PropTypes.func.isRequired, // New prop for setting search input
 };
 
 export default ImageGallery;

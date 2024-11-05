@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './ImageCard.css';
 import ImageModal from './ImageModal';
 
-const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) => {
+const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids, categories, onTagClick }) => {
   const [svgContent, setSvgContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -35,6 +35,11 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) =
     return `the2px-${title}-${date}.${extension}`;
   };
   
+  const handleTagClick = (tagName) => {
+    console.log('Clicked tag:', tagName); // Log the clicked tag to the console
+    onTagClick(tagName); // Send the tag to ImageGallery
+    handleCloseModal(); // Close the modal after clicking the tag
+  };
   
   const downloadSvg = () => {
     // Add a comment with the website name to the SVG content
@@ -162,7 +167,8 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) =
       <ImageModal 
         show={showModal} 
         handleClose={handleCloseModal} 
-        title={title} 
+        title={`${categories && categories.length > 0 ? categories.slice(0, 2).join(' / ') : 'All'} / ${title}`}
+
         image={svgContent}
         downloadSvg={downloadSvg} 
         convertSvgToPng={convertSvgToPng} 
@@ -170,6 +176,7 @@ const ImageCard = ({ title, svgUrl, tags, backgroundColor, otherImages, ids }) =
         convertSvgToJpeg={convertSvgToJpeg} 
         otherImages={otherImages}
         imgid={ids}
+        onTagClick={handleTagClick} // Pass the tag click handler to ImageModal
       />
     </>
   );

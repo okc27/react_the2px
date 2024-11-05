@@ -30,6 +30,11 @@ function register_custom_fields() {
                 return get_field('svg_image_tags', $data['id']);
             }
         ]);
+        register_rest_field('svg_images', 'svg_file_categorie', [
+            'get_callback' => function($data) {
+                return get_field('svg_file_categorie', $data['id']);
+            }
+        ]);
         register_rest_field('svg_images', 'svg_image_file', [
             'get_callback' => function($data) {
                 return get_field('svg_image_file', $data['id']);
@@ -52,5 +57,3 @@ function fix_svg_media_library($response, $attachment_id) {
     return $response;
 }
 add_filter('wp_prepare_attachment_for_js', 'fix_svg_media_library', 10, 2);
-
-?>

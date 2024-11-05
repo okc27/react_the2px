@@ -6,7 +6,7 @@
   display: flex; /* Use flexbox for layout */
   flex-wrap: wrap; /* Allow wrapping on small screens */
   justify-content: space-between; /* Space between items */
-  padding: 10px; /* Add some padding for spacing */
+  padding: 5px; /* Add some padding for spacing */
 }
 
 .res-sec {
@@ -27,7 +27,7 @@
 }
 
 .format-selection h3{
-  padding-left: 10px !important;
+  padding-left: 5px !important;
 }
 .or-spacer { 
   margin: 10px auto;
@@ -42,7 +42,7 @@
   color: black;
   padding-top: 5px !important;
   padding-bottom: 5px !important;
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid #e7e7e7 !important;
 }
 
 .modal-content{
@@ -51,7 +51,7 @@
 }
 
 .modal-title {
-  font-size: 1.75rem;
+  font-size: 1rem !important;
   font-weight: 500;
 }
 .b-35 {
@@ -144,7 +144,11 @@ button.btn {
 .content-section {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
+}
+
+.content-section h3{
+  margin-right: 2%;
 }
 
 .edit-more-colors{
@@ -153,10 +157,14 @@ button.btn {
 
 .customize-label {
   font-weight: 500;
-  margin-right: 15px;
-  font-size: 1.2rem;
+  width: 20%;
 }
 
+.bg-col{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
 .color-picker-row {
   display: flex;
 }
@@ -186,9 +194,6 @@ button.btn {
   margin: 0 10px;
 }
 
-.colors {
-  display: flex;
-}
 
 a.edit-more-colors{
   font-size: 1rem;
@@ -206,15 +211,15 @@ a.edit-more-colors{
   .bg-color-circle {
     margin-bottom: 10px;
   }
-  .separator {
-    display: none;
-  }
+
   .content-section{
     display: block;
   }
   .color-picker-row{
+    display: block;
+  }
+  .bg-col{
     margin-top: 10px;
-    display: block;;
   }
 }
 
@@ -241,14 +246,11 @@ h3 {
   font-size: 1rem !important;
   font-weight: bold !important;
   margin-bottom: 0px !important;
-  padding-left: 10px;
 }
 
 
 .color-picker-container {
-  position: absolute; /* Keep it absolute to allow positioning */
-  top:auto !important;
-  left: auto !important;
+  position: fixed; /* Keep it absolute to allow positioning */
   z-index: 1000; /* Make sure it's on top */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add some shadow for visibility */
 }
@@ -292,8 +294,12 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px; /* Reduced gap for better alignment */
+  width: 80%;
 }
 
+.tag-sec{
+  padding: 5px;
+}
 
 .tag {
   display: inline-block; /* Make sure the tag takes up only necessary space */
@@ -399,7 +405,12 @@ h3 {
   background-color: #fff;
 }
 
+.other-images-footer{
+  padding: 5px;
+}
+
 .other-images-footer h3{
+  text-align: center;
   margin-bottom: 10px !important;
 }
 
@@ -423,14 +434,19 @@ h3 {
   .content-section{
     width: 100% !important;
   }
+  .modal-content{
+    width: 90% !important;
+    margin-left: 10%;
+  }
 }
 
 @media (max-width: 785px){
   .content-section{
     display: block;
   }
-  .color-picker-row{
-    margin-top: 10px
+  .modal-content{
+    width: 100% !important;
+    margin-left: 0px
   }
 };
   
@@ -461,14 +477,7 @@ h3 {
   }
 
 }
-@media (max-width:420px) {
 
-  .button-35{
-    font-size: 0.50rem;
-    width: 25%;
-  }
-
-}
 
 @media (max-width: 992px){
   .selection-container{
@@ -477,14 +486,12 @@ h3 {
   .res-sec , .b-35{
     width: 100% !important;
   }
-  .selection-container{
-    padding: 0px;
-  }
+
   .res-sec h3{
-    padding-left: 10px !important;
+    padding-left: 0px !important;
   }
   .format-selection h3{
-    padding-left: 3%  !important;
+    padding-left: 0px  !important;
   }
   .format-selection{
     width: 100%;

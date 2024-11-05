@@ -48,6 +48,7 @@ const App = () => {
         <ImageGallery 
           bgColor={bgColor} 
           searchInput={searchInput} 
+          setSearchInput={setSearchInput} // Pass setSearchInput to 
           openModal={openModal} // Pass openModal function to ImageGallery
         />
       </main>

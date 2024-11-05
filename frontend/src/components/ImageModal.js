@@ -25,7 +25,7 @@ const throttle = (func, limit) => {
   };
 };
 
-const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
+const ImageModal = ({ show, handleClose, image, title, tags, otherImages, onTagClick }) => {
   const [colors, setColors] = useState([]);
   const [currentColorIndex, setCurrentColorIndex] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
@@ -303,7 +303,8 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
     const imagesToDisplay = isSmallScreen
       ? filteredOtherImages.slice(currentIndex, currentIndex + 3) // Only 3 images for small screens
       : filteredOtherImages.slice(currentIndex, currentIndex + imagesToShow);
-  
+
+      
     return (
       <div className="other-images-container" style={{ 
         display: 'flex', 
@@ -331,18 +332,21 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
                 height: '100%', 
                 objectFit: 'contain' 
               }}
+
+              
               onClick={() => {
                 fetch(img.svg_image_file)
                   .then(response => response.text())
                   .then(svgContent => {
                     setTemporarySvgContent(svgContent);
-                    setModalTitle(img.title.rendered || 'New SVG Image');
+                    setModalTitle(`${(img.svg_file_categorie && Array.isArray(img.svg_file_categorie) ? img.svg_file_categorie.slice(0, 2).join(' / ') : 'All')} / ${img.title.rendered}`);
                     setCurrentTags(img.tags || []);
                     setColors(extractColors(svgContent)); // Update colors for the selected image
                   })
                   .catch(error => console.error('Error fetching SVG:', error));
               }}
             />
+            
           </div>
         ))}
       </div>
@@ -352,8 +356,12 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
   const renderTags = () => {
     if (!currentTags || !Array.isArray(currentTags)) return null; // Return null if no tags or not an array
     return currentTags.map((tag, index) => (
-      <span key={index} className="tag">
-        {tag.trim()} {/* Trim whitespace around each tag */}
+      <span 
+        key={index} 
+        className="tag" 
+        onClick={() => onTagClick(tag.trim())} // Trigger onTagClick with the clicked tag
+      >
+        {tag.trim()}
       </span>
     ));
   };
@@ -417,8 +425,8 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
             />
           </div>
             <div className="content-section">
-              <span className="customize-label">Customize Color </span>
-              
+              <h3>Customize Color </h3>
+              <div className='bg-col'>
               <div className="color-picker-row">
                 {/* Background color picker */}
                 <div 
@@ -426,7 +434,7 @@ const ImageModal = ({ show, handleClose, image, title, tags, otherImages }) => {
                   style={{ backgroundColor }} 
                   onClick={handleBgColorClick}
                 />
-                
+                </div>
                 {/* Separator */}
                 <div className="separator"></div>
                 
